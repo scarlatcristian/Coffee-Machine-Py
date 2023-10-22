@@ -1,4 +1,4 @@
-coffees = {
+coffee_type = {
 
     "espresso": {
         "water": 50,
@@ -9,8 +9,8 @@ coffees = {
 
     "latte": {
         "water": 200,
-        "coffee": 24,
-        "milk": 150,
+        "coffee": 924,
+        "milk": 1500,
         "price": 2.50
     },
 

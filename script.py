@@ -1,4 +1,4 @@
-from coffee import coffees
+from coffee import coffee_type
 
 coins = {
     "penny": 0.01,
@@ -6,6 +6,29 @@ coins = {
     "dime": 0.10,
     "quarter": 0.25
 }
+
+
+def add_more_resources(coffee_machine, coffee):
+    if coffee_machine["water"] < coffee["water"]:
+        coffee_machine["water"] += int(
+            input("How many ml of water you want to add?: "))
+
+    if coffee_machine["milk"] < coffee["milk"]:
+        coffee_machine["milk"] += int(
+            input("How many ml of milk you want to add?: "))
+
+    if coffee_machine["coffee"] < coffee["coffee"]:
+        coffee_machine["coffee"] += int(
+            input("How many g of coffee you want to add?: "))
+    return coffee_machine
+
+
+def making_coffee(coffee_machine, coffee):
+    coffee_machine["water"] -= coffee["water"]
+    coffee_machine["milk"] -= coffee["milk"]
+    coffee_machine["coffee"] -= coffee["coffee"]
+    coffee_machine["money"] += coffee["price"]
+    return coffee_machine
 
 
 def pay_coffee():
@@ -28,18 +51,28 @@ def check_coffee_machine(coffee_machine):
             print(f"{key.capitalize()}: {coffee_machine[key]}$")
 
 
-def make_coffee(coffee_machine, coffee):
+def check_if_costumer():
+    answer = input("Would you like a coffee? Type y/n: ").lower()
+    if answer == 'y' or answer == 'yes':
+        return True
+    else:
+        return False
+
+
+def can_machine_make_coffee(coffee_machine, coffee):
     """
     Will return true if the machine has enough ingredients to make coffee, otherwise it will return false
     """
-    if coffee["water"] > coffee_machine["water"]:
-        print("Sorry no enough water.")
-        return False
-    if coffee["milk"] > coffee_machine["milk"]:
-        print("Sorry no enough milk.")
-        return False
-    if coffee["coffee"] > coffee_machine["coffee"]:
-        print("Sorry no enough coffee.")
+    if coffee["water"] > coffee_machine["water"] or coffee["milk"] > coffee_machine["milk"] or coffee["coffee"] > coffee_machine["coffee"]:
+        if coffee["water"] > coffee_machine["water"]:
+            print(
+                f"Sorry not enough water. Only {coffee_machine['water']}ml left and needed {coffee['water']}ml for the coffee")
+        if coffee["milk"] > coffee_machine["milk"]:
+            print(
+                f"Sorry not enough milk. Only {coffee_machine['milk']}ml left and needed {coffee['milk']}ml for the coffee")
+        if coffee["coffee"] > coffee_machine["coffee"]:
+            print(
+                f"Sorry not enough coffee. Only {coffee_machine['coffee']}ml left and needed {coffee['coffee']}ml for the coffee")
         return False
     return True
 
@@ -51,34 +84,48 @@ def coffee_machine():
         "coffee": 100,
         "money": 0
     }
-    coffee_choice = ''
 
-    choice = input(
-        "What would you like? (espresso/latte/cappuccino): ").lower()
-    while choice != 'espresso' and choice != 'latte' and choice != 'cappuccino' and choice != 'report':
-        choice = input(
-            "Enter a valid option (espresso/latte/cappuccino): ").lower()
+    costumer_in_line = True
+    while costumer_in_line:
+        coffee_name = input(
+            "What would you like? (espresso/latte/cappuccino): ").lower()
+        while coffee_name != 'espresso' and coffee_name != 'latte' and coffee_name != 'cappuccino' and coffee_name != 'report':
+            coffee_name = input(
+                "Enter a valid option (espresso/latte/cappuccino): ").lower()
 
-    if choice == 'report':
-        check_coffee_machine(coffee_machine)
-    else:
-        coffee_choice = coffees[choice]
+        if coffee_name == 'report':
+            check_coffee_machine(coffee_machine)
 
-    making_coffee = make_coffee(
-        coffee_machine=coffee_machine, coffee=coffee_choice)
+        else:
+            coffee_choice = coffee_type[coffee_name]
+            coffee_price = coffee_choice["price"]
+            coffee_has_resources = can_machine_make_coffee(
+                coffee_machine, coffee_choice)
 
-    if making_coffee:
-        print(
-            f"The price for the {choice} is {coffee_choice['price']}$")
-        total = pay_coffee()
+            while not coffee_has_resources:
+                coffee_machine = add_more_resources(
+                    coffee_machine, coffee_choice)
+                coffee_has_resources = can_machine_make_coffee(
+                    coffee_machine=coffee_machine, coffee=coffee_choice)
 
-        while total < coffee_choice["price"]:
-            print(f"{coffee_choice['price'] - total}$ left to pay")
-            left_to_pay = pay_coffee()
-            total += left_to_pay
+            print(
+                f"The price for the {coffee_name} is {coffee_price}$")
 
-        if total > coffee_choice["price"]:
-            print(f"Here is {total- coffee_choice['price']}$ in change")
+            total = pay_coffee()
+
+            while total < coffee_price:
+                print(f"{coffee_price - total}$ left to pay")
+                left_to_pay = pay_coffee()
+                total += left_to_pay
+
+            if total > coffee_price:
+                print(f"Here is {total - coffee_price}$ in change")
+
+            coffee_machine = making_coffee(
+                coffee_machine, coffee_choice)
+            print(f"Here is your {coffee_name}. Enjoy!")
+
+        costumer_in_line = check_if_costumer()
 
 
 coffee_machine()
