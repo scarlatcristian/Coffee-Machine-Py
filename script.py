@@ -133,7 +133,7 @@ def coffee_machine():
                     if total < coffee_price:
                         return_money = False
 
-            if total > coffee_price:
+            if total >= coffee_price:
                 print(f"Here is {total - coffee_price}$ in change")
 
                 coffee_machine = making_coffee(coffee_machine, coffee_choice)
