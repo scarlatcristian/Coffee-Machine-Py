@@ -89,12 +89,16 @@ def coffee_machine():
     while costumer_in_line:
         coffee_name = input(
             "What would you like? (espresso/latte/cappuccino): ").lower()
-        while coffee_name != 'espresso' and coffee_name != 'latte' and coffee_name != 'cappuccino' and coffee_name != 'report':
+        while coffee_name != 'espresso' and coffee_name != 'latte' and coffee_name != 'cappuccino' and coffee_name != 'report' and coffee_name != 'off':
             coffee_name = input(
                 "Enter a valid option (espresso/latte/cappuccino): ").lower()
 
         if coffee_name == 'report':
             check_coffee_machine(coffee_machine)
+
+        if coffee_name == 'off':
+            costumer_in_line = 'False'
+            return
 
         else:
             coffee_choice = coffee_type[coffee_name]
@@ -113,18 +117,30 @@ def coffee_machine():
 
             total = pay_coffee()
 
-            while total < coffee_price:
+            return_money = False
+            while total < coffee_price and return_money == False:
                 print(f"{coffee_price - total}$ left to pay")
-                left_to_pay = pay_coffee()
-                total += left_to_pay
+
+                return_money = input(
+                    "Type 'y' to return the money or 'n' to add more? Type y/n: ").lower()
+
+                if return_money == 'y' or return_money == 'yes':
+                    print(f"Here is your money back {total}$")
+                    return_money = True
+                else:
+                    print(f"{coffee_price - total}$ left to pay")
+                    left_to_pay = pay_coffee()
+                    total += left_to_pay
+                    if total < coffee_price:
+                        return_money = False
 
             if total > coffee_price:
                 print(f"Here is {total - coffee_price}$ in change")
 
-            coffee_machine = making_coffee(
-                coffee_machine, coffee_choice)
-            print(f"Here is your {coffee_name}. Enjoy!")
+                coffee_machine = making_coffee(coffee_machine, coffee_choice)
+                print(f"Here is your {coffee_name}. Enjoy!")
 
+        return_money = False
         costumer_in_line = check_if_costumer()
 
 
