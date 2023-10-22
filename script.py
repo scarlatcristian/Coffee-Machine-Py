@@ -85,8 +85,8 @@ def coffee_machine():
         "money": 0
     }
 
-    costumer_in_line = True
-    while costumer_in_line:
+    machine_on = True
+    while machine_on:
         coffee_name = input(
             "What would you like? (espresso/latte/cappuccino): ").lower()
         while coffee_name != 'espresso' and coffee_name != 'latte' and coffee_name != 'cappuccino' and coffee_name != 'report' and coffee_name != 'off':
@@ -97,8 +97,7 @@ def coffee_machine():
             check_coffee_machine(coffee_machine)
 
         if coffee_name == 'off':
-            costumer_in_line = 'False'
-            return
+            machine_on = False
 
         else:
             coffee_choice = coffee_type[coffee_name]
@@ -141,7 +140,6 @@ def coffee_machine():
                 print(f"Here is your {coffee_name}. Enjoy!")
 
         return_money = False
-        costumer_in_line = check_if_costumer()
 
 
 coffee_machine()
